@@ -481,7 +481,7 @@ writeHashedFile outputDirectory relFile contents = do
     alreadyExists <- doesFileExist outFile
     unless alreadyExists $ do
         ensureDir outDir
-        S8.writeFile (toFilePath outFile) contents
+        writeBinaryFileDurableAtomic (toFilePath outFile) contents
     return outFile
 
 renderScript :: Bool -> [GhciPkgInfo] -> Maybe (Path Abs File) -> Bool -> [Path Abs File] -> GhciScript

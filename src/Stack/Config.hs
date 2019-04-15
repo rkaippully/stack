@@ -482,7 +482,7 @@ loadBuildConfig = do
                    logInfo "Note: You can change the snapshot via the resolver field there."
                    p <- getEmptyProject mresolver []
                    liftIO $ do
-                       S.writeFile dest' $ S.concat
+                       writeBinaryFileDurableAtomic dest' $ S.concat
                            [ "# This is the implicit global project's config file, which is only used when\n"
                            , "# 'stack' is run outside of a real project.  Settings here do _not_ act as\n"
                            , "# defaults for all projects.  To change stack's default settings, edit\n"
@@ -492,7 +492,7 @@ loadBuildConfig = do
                            , "# http://docs.haskellstack.org/en/stable/yaml_configuration/\n"
                            , "#\n"
                            , Yaml.encode p]
-                       S.writeFile (toFilePath $ parent dest </> relFileReadmeTxt) $ S.concat
+                       writeBinaryFileDurableAtomic (toFilePath $ parent dest </> relFileReadmeTxt) $ S.concat
                            [ "This is the implicit global project, which is used only when 'stack' is run\n"
                            , "outside of a real project.\n" ]
                    return (p, dest)
@@ -822,7 +822,7 @@ getDefaultUserConfigPath stackRoot = do
         (defaultUserConfigPathDeprecated stackRoot)
     unless exists $ do
         ensureDir (parent path)
-        liftIO $ S.writeFile (toFilePath path) defaultConfigYaml
+        liftIO $ writeBinaryFileDurableAtomic (toFilePath path) defaultConfigYaml
     return path
 
 packagesParser :: Parser [String]

@@ -24,6 +24,7 @@ module Stack.Prelude
   ) where
 
 import           RIO                  as X
+import           RIO.File             as X
 import           Data.Conduit         as X (ConduitM, runConduit, (.|))
 import           Path                 as X (Abs, Dir, File, Path, Rel,
                                             toFilePath)

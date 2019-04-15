@@ -25,7 +25,6 @@ import           Data.List
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as T
-import qualified Data.Text.IO as T
 import qualified Data.Text.Lazy as LT
 import           Distribution.Version (mkVersion)
 import           Path
@@ -357,7 +356,7 @@ generateHpcMarkupIndex = do
                   , pathToHtml testsuite
                   , "</a></td></tr>"
                   ]
-    liftIO $ T.writeFile (toFilePath outputFile) $ T.concat $
+    writeBinaryFileDurableAtomic (toFilePath outputFile) $ encodeUtf8 $ T.concat $
         [ "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">"
         -- Part of the css from HPC's output HTML
         , "<style type=\"text/css\">"
@@ -429,7 +428,7 @@ findPackageFieldForBuiltPackage pkgDir pkgId internalLibs field = do
         pkgIdStr = packageIdentifierString pkgId
         notFoundErr = return $ Left $ "Failed to find package key for " <> T.pack pkgIdStr
         extractField path = do
-            contents <- liftIO $ T.readFile (toFilePath path)
+            contents <- readFileUtf8 (toFilePath path)
             case asum (map (T.stripPrefix (field <> ": ")) (T.lines contents)) of
                 Just result -> return $ Right result
                 Nothing -> notFoundErr

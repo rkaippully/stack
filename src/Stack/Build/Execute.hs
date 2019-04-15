@@ -330,11 +330,11 @@ withExecuteEnv bopts boptsCli baseConfigOpts locals globalPackages snapshotPacka
         setupFileName <- parseRelFile ("setup-" ++ simpleSetupHash ++ ".hs")
         let setupHs = setupSrcDir </> setupFileName
         setupHsExists <- doesFileExist setupHs
-        unless setupHsExists $ liftIO $ S.writeFile (toFilePath setupHs) simpleSetupCode
+        unless setupHsExists $ writeBinaryFileDurableAtomic (toFilePath setupHs) simpleSetupCode
         setupShimFileName <- parseRelFile ("setup-shim-" ++ simpleSetupHash ++ ".hs")
         let setupShimHs = setupSrcDir </> setupShimFileName
         setupShimHsExists <- doesFileExist setupShimHs
-        unless setupShimHsExists $ liftIO $ S.writeFile (toFilePath setupShimHs) setupGhciShimCode
+        unless setupShimHsExists $ writeBinaryFileDurableAtomic (toFilePath setupShimHs) setupGhciShimCode
         setupExe <- getSetupExe setupHs setupShimHs tmpdir
 
         cabalPkgVer <- view cabalVersionL
@@ -1138,7 +1138,7 @@ withSingleContext ActionContext {..} ee@ExecuteEnv {..} task@Task {..} mdeps msu
                             let macroDeps = mapMaybe snd matchedDeps
                                 cppMacrosFile = toFilePath $ setupDir </> relFileSetupMacrosH
                                 cppArgs = ["-optP-include", "-optP" ++ cppMacrosFile]
-                            liftIO $ S.writeFile cppMacrosFile (encodeUtf8 (T.pack (C.generatePackageVersionMacros macroDeps)))
+                            writeBinaryFileDurableAtomic cppMacrosFile (encodeUtf8 (T.pack (C.generatePackageVersionMacros macroDeps)))
                             return (packageDBArgs ++ depsArgs ++ cppArgs)
 
                         -- This branch is taken when

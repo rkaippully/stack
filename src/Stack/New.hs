@@ -266,11 +266,12 @@ writeTemplateFiles
     :: MonadIO m
     => Map (Path Abs File) LB.ByteString -> m ()
 writeTemplateFiles files =
+    liftIO $
     forM_
         (M.toList files)
         (\(fp,bytes) ->
               do ensureDir (parent fp)
-                 liftIO (LB.writeFile (toFilePath fp) bytes))
+                 writeBinaryFileDurableAtomic (toFilePath fp) $ toStrictBytes bytes)
 
 -- | Run any initialization functions, such as Git.
 runTemplateInits

@@ -32,7 +32,6 @@ module Stack.Build.Cache
 import           Stack.Prelude
 import           Crypto.Hash (hashWith, SHA256(..))
 import qualified Data.ByteArray as Mem (convert)
-import qualified Data.ByteString as B
 import qualified Data.Map as M
 import qualified Data.Set as Set
 import qualified Data.Text as T
@@ -89,7 +88,7 @@ markExeInstalled loc ident = do
     -- TODO consideration for the future: list all of the executables
     -- installed, and invalidate this file in getInstalledExes if they no
     -- longer exist
-    liftIO $ B.writeFile fp "Installed"
+    writeBinaryFileDurableAtomic fp "Installed"
 
 -- | Mark the given executable as not installed
 markExeNotInstalled :: (HasEnvConfig env)
@@ -167,7 +166,7 @@ writeCabalMod :: HasEnvConfig env
               -> RIO env ()
 writeCabalMod dir x = do
     fp <- toFilePath <$> configCabalMod dir
-    writeFileBinary fp "Just used for its modification time"
+    writeBinaryFileDurableAtomic fp "Just used for its modification time"
     liftIO $ setFileTimes fp x x
 
 -- | Delete the caches for the project.
@@ -218,7 +217,7 @@ setTestSuccess :: HasEnvConfig env
                -> RIO env ()
 setTestSuccess dir = do
     fp <- testSuccessFile dir
-    writeFileBinary (toFilePath fp) successBS
+    writeBinaryFileDurableAtomic (toFilePath fp) successBS
 
 -- | Mark a test suite as not having succeeded
 unsetTestSuccess :: HasEnvConfig env
@@ -226,7 +225,7 @@ unsetTestSuccess :: HasEnvConfig env
                  -> RIO env ()
 unsetTestSuccess dir = do
     fp <- testSuccessFile dir
-    writeFileBinary (toFilePath fp) failureBS
+    writeBinaryFileDurableAtomic (toFilePath fp) failureBS
 
 -- | Check if the test suite already passed
 checkTestSuccess :: HasEnvConfig env

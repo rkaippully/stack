@@ -19,7 +19,6 @@ import           Path.IO (ignoringAbsence, removeDirRecur)
 import           Stack.Constants.Config (rootDistDirFromDir, workDirFromDir)
 import           Stack.Types.Config
 import           Stack.Types.SourceMap
-import           System.Exit (exitFailure)
 
 -- | Deletes build artifacts in the current project.
 --

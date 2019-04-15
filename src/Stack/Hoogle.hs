@@ -20,7 +20,6 @@ import qualified Stack.Build
 import           Stack.Build.Target (NeedTargets(NeedTargets))
 import           Stack.Runners
 import           Stack.Types.Config
-import           System.Exit
 import           RIO.Process
 
 -- | Hoogle command.

@@ -54,7 +54,6 @@ import           Stack.Types.Version
 import           Stack.Types.Config
 import           Stack.Types.Docker
 import           System.Environment (getEnv,getEnvironment,getProgName,getArgs,getExecutablePath)
-import           System.Exit (exitSuccess, exitWith, ExitCode(..))
 import qualified System.FilePath as FP
 import           System.IO (stderr,stdin)
 import           System.IO.Error (isDoesNotExistError)

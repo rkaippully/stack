@@ -102,7 +102,6 @@ import           Stack.Upgrade
 import qualified Stack.Upload as Upload
 import qualified System.Directory as D
 import           System.Environment (getProgName, getArgs, withArgs)
-import           System.Exit
 import           System.FilePath (isValid, pathSeparator, takeDirectory)
 import qualified System.FilePath as FP
 import           System.IO (stderr, stdin, stdout, BufferMode(..), hPutStrLn, hGetEncoding, hSetEncoding)

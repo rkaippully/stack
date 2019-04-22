@@ -55,6 +55,10 @@ options =
                  "Check snapshot consistency"
                  (const checkSnapshot)
                  (pure ())
+      addCommand "legacy-snapshot"
+                 "Generate a legacy-format snapshot file"
+                 (const legacySnapshot)
+                 (pure ())
       addCommand "unpack"
                  "Unpack snapshot packages and create a Stack project for it"
                  (const unpackFiles)
@@ -163,6 +167,15 @@ checkSnapshot = do
   decodeFileThrow constraintsFilename >>= \constraints' -> do
     snapshot' <- loadSnapshotYaml
     withFixedColorTerm $ checkDependencyGraph constraints' snapshot'
+
+legacySnapshot :: RIO PantryApp ()
+legacySnapshot = do
+  logInfo "Generating legacy-style snapshot file in legacy-snapshot.yaml"
+  abs' <- resolveFile' snapshotFilename
+  (snapshot', _) <- loadAndCompleteSnapshot $ SLFilePath $
+    ResolvedPath (RelFilePath (fromString snapshotFilename)) abs'
+  legacy <- withFixedColorTerm $ toLegacySnapshot snapshot'
+  liftIO $ encodeFile "legacy-snapshot.yaml" legacy
 
 data FixedColorTermApp = FixedColorTermApp
     { fctApp :: PantryApp
